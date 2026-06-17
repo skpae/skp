@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 4 - Redux | IT3K6 Sun Kepeng</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/redux@4.2.1/dist/redux.min.js"></script>
+    <script src="https://unpkg.com/react-redux@8.1.3/dist/react-redux.min.js"></script>
+    <script src="https://unpkg.com/@reduxjs/toolkit@1.9.7/dist/redux-toolkit.umd.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .nav-bar { background: white; padding: 15px 30px; border-radius: 15px; margin: 20px auto; max-width: 1200px; display: flex; gap: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
+        .nav-bar a { color: #667eea; text-decoration: none; font-weight: 600; padding: 8px 16px; border-radius: 8px; transition: all 0.3s; }
+        .nav-bar a:hover { background: #f0f0f0; }
+        .nav-bar a.active { background: #667eea; color: white; }
+        .github-link { margin-left: auto; color: #333; font-size: 14px; }
+        .github-link a { color: #667eea; }
+        .redux-info { background: white; padding: 25px 30px; border-radius: 15px; margin-bottom: 25px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
+        .redux-info h3 { color: #667eea; margin-bottom: 15px; }
+        .redux-info pre { background: #1e1e1e; color: #d4d4d4; padding: 15px; border-radius: 10px; overflow-x: auto; font-size: 13px; line-height: 1.6; }
+        .store-state { background: #f8f9fa; padding: 20px; border-radius: 10px; margin-top: 15px; }
+        .store-state h4 { color: #555; margin-bottom: 10px; }
+        .store-state code { color: #667eea; font-size: 13px; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const { createSlice, configureStore } = window.RTK;
+        const { Provider, useSelector, useDispatch } = window.ReactRedux;
+        const { useState } = React;
+
+        // --- Redux Slice: Entities ---
+        const entitiesSlice = createSlice({
+            name: 'entities',
+            initialState: {
+                items: [
+                    { id: 1, name: 'React Framework', description: 'JavaScript library for building user interfaces', date: '2024-01-15' },
+                    { id: 2, name: 'Redux Toolkit', description: 'Official toolset for efficient Redux development', date: '2024-02-20' },
+                    { id: 3, name: 'React Router', description: 'Declarative routing for React applications', date: '2024-03-10' }
+                ]
+            },
+            reducers: {
+                addEntity: (state, action) => {
+                    state.items.push({ id: Date.now(), ...action.payload, date: new Date().toISOString().split('T')[0] });
+                },
+                deleteEntity: (state, action) => {
+                    state.items = state.items.filter(item => item.id !== action.payload);
+                }
+            }
+        });
+        const { addEntity, deleteEntity } = entitiesSlice.actions;
+
+        // --- Redux Slice: Auth ---
+        const authSlice = createSlice({
+            name: 'auth',
+            initialState: { user: { name: 'Sun Kepeng', username: 'it3k6', role: 'Student' }, isAuthenticated: true },
+            reducers: {
+                login: (state, action) => { state.user = action.payload; state.isAuthenticated = true; },
+                logout: (state) => { state.user = null; state.isAuthenticated = false; }
+            }
+        });
+
+        // --- Store ---
+        const store = configureStore({
+            reducer: {
+                entities: entitiesSlice.reducer,
+                auth: authSlice.reducer
+            }
+        });
+
+        // --- Components ---
+        function CardsWithRedux() {
+            const entities = useSelector(state => state.entities.items);
+            const user = useSelector(state => state.auth.user);
+            const dispatch = useDispatch();
+            const [name, setName] = useState('');
+            const [description, setDescription] = useState('');
+
+            const handleAdd = (e) => {
+                e.preventDefault();
+                if (!name.trim() || !description.trim()) return;
+                dispatch(addEntity({ name: name.trim(), description: description.trim() }));
+                setName(''); setDescription('');
+            };
+
+            return (
+                <div className="container">
+                    <div className="page-header">
+                        <h2>📦 Lab 4: Redux State Management</h2>
+                        <p>User: {user?.name} | Entities in store: {entities.length}</p>
+                    </div>
+
+                    <div className="redux-info">
+                        <h3>🗄️ Redux Store Structure</h3>
+                        <pre>{`store = {
+  entities: {
+    items: [ ... ]  // Array of entity objects
+  },
+  auth: {
+    user: { name, username, role },
+    isAuthenticated: true
+  }
+}`}</pre>
+                        <div className="store-state">
+                            <h4>Current Store State:</h4>
+                            <code>Entities: {entities.length} items | User: {user?.name} ({user?.role})</code>
+                        </div>
+                    </div>
+
+                    <div className="add-form">
+                        <h3>➕ Add Entity (via Redux dispatch)</h3>
+                        <form onSubmit={handleAdd} className="form-row">
+                            <div className="input-group">
+                                <label>Name</label>
+                                <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Entity name" required />
+                            </div>
+                            <div className="input-group">
+                                <label>Description</label>
+                                <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" required />
+                            </div>
+                            <button type="submit" className="btn-add">dispatch(addEntity())</button>
+                        </form>
+                    </div>
+
+                    <div className="cards-grid">
+                        {entities.map(entity => (
+                            <div key={entity.id} className="card-item">
+                                <button className="btn-delete" onClick={() => dispatch(deleteEntity(entity.id))} title="Delete">×</button>
+                                <div className="card-id">ID: {entity.id}</div>
+                                <div className="card-name">{entity.name}</div>
+                                <div className="card-desc">{entity.description}</div>
+                                <div className="card-date">📅 {entity.date}</div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+
+        function App() {
+            return (
+                <Provider store={store}>
+                    <div>
+                        <div className="nav-bar">
+                            <a href="lab1_git.html">Lab 1: Git</a>
+                            <a href="lab2_cards.html">Lab 2: Cards</a>
+                            <a href="lab3_login.html">Lab 3: Login</a>
+                            <a href="lab4_redux.html" className="active">Lab 4: Redux</a>
+                            <div className="github-link">
+                                <a href="https://github.com/skpae/skp" target="_blank">🐙 GitHub Repo</a>
+                            </div>
+                        </div>
+                        <CardsWithRedux />
+                    </div>
+                </Provider>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+</body>
+</html>

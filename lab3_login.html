@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 3 - Login & Router | IT3K6 Sun Kepeng</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/react-router-dom@6.23.1/umd/react-router-dom.production.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .nav-bar { background: white; padding: 15px 30px; border-radius: 15px; margin: 20px auto; max-width: 1200px; display: flex; gap: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
+        .nav-bar a { color: #667eea; text-decoration: none; font-weight: 600; padding: 8px 16px; border-radius: 8px; transition: all 0.3s; }
+        .nav-bar a:hover { background: #f0f0f0; }
+        .nav-bar a.active { background: #667eea; color: white; }
+        .github-link { margin-left: auto; color: #333; font-size: 14px; }
+        .github-link a { color: #667eea; }
+        .router-info { background: white; padding: 20px 30px; border-radius: 15px; margin: 20px auto; max-width: 1200px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
+        .router-info h3 { color: #667eea; margin-bottom: 10px; }
+        .router-info code { background: #f5f5f5; padding: 2px 8px; border-radius: 4px; color: #667eea; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState } = React;
+        const { BrowserRouter, Routes, Route, Navigate, useNavigate, Link } = window.ReactRouterDOM;
+
+        // Demo accounts
+        const accounts = [
+            { username: 'admin', password: 'admin123', name: 'Administrator', role: 'Admin' },
+            { username: 'user1', password: 'user123', name: 'User One', role: 'User' },
+            { username: 'it3k6', password: 'sun123', name: 'Sun Kepeng', role: 'Student' }
+        ];
+
+        function LoginPage() {
+            const [username, setUsername] = useState('');
+            const [password, setPassword] = useState('');
+            const [error, setError] = useState('');
+            const [user, setUser] = useState(null);
+            const navigate = useNavigate();
+
+            const handleLogin = (e) => {
+                e.preventDefault();
+                const found = accounts.find(a => a.username === username && a.password === password);
+                if (found) {
+                    setUser(found);
+                    setError('');
+                } else {
+                    setError('Invalid username or password!');
+                }
+            };
+
+            const handleLogout = () => {
+                setUser(null);
+                setUsername('');
+                setPassword('');
+            };
+
+            if (user) {
+                return (
+                    <div className="container">
+                        <div className="page-header">
+                            <h2>✅ Login Successful!</h2>
+                            <p>Welcome, {user.name} ({user.role})</p>
+                        </div>
+                        <div style={{background: 'white', padding: '30px', borderRadius: '15px', textAlign: 'center'}}>
+                            <p style={{fontSize: '18px', marginBottom: '20px'}}>👤 Logged in as: <strong>{user.name}</strong></p>
+                            <p style={{color: '#888', marginBottom: '20px'}}>Username: {user.username} | Role: {user.role}</p>
+                            <button className="btn-logout" onClick={handleLogout}>Logout</button>
+                        </div>
+                        <div className="router-info">
+                            <h3>🧭 React Router Implementation</h3>
+                            <p>This page demonstrates React Router with the following routes:</p>
+                            <p><code>/login</code> — Login page (current)</p>
+                            <p><code>/cards</code> — Cards page (redirect after login)</p>
+                            <p><code>/about</code> — About page</p>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="login-container">
+                    <div className="login-card">
+                        <h2>🔐 Lab 3: Login Page</h2>
+                        <p className="subtitle">React Router + State Management</p>
+                        <form onSubmit={handleLogin}>
+                            <div className="input-group">
+                                <label>Username</label>
+                                <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Enter username" required />
+                            </div>
+                            <div className="input-group">
+                                <label>Password</label>
+                                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter password" required />
+                            </div>
+                            <button type="submit" className="btn-login">Login</button>
+                            <p className="error-msg">{error}</p>
+                        </form>
+                        <div className="demo-accounts">
+                            <p><strong>Demo Accounts:</strong></p>
+                            <p><code>admin</code> / <code>admin123</code></p>
+                            <p><code>user1</code> / <code>user123</code></p>
+                            <p><code>it3k6</code> / <code>sun123</code></p>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        function App() {
+            return (
+                <BrowserRouter>
+                    <div>
+                        <div className="nav-bar">
+                            <a href="lab1_git.html">Lab 1: Git</a>
+                            <a href="lab2_cards.html">Lab 2: Cards</a>
+                            <a href="lab3_login.html" className="active">Lab 3: Login</a>
+                            <a href="lab4_redux.html">Lab 4: Redux</a>
+                            <div className="github-link">
+                                <a href="https://github.com/skpae/skp" target="_blank">🐙 GitHub Repo</a>
+                            </div>
+                        </div>
+                        <Routes>
+                            <Route path="/" element={<Navigate to="/login" />} />
+                            <Route path="/login" element={<LoginPage />} />
+                        </Routes>
+                    </div>
+                </BrowserRouter>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+</body>
+</html>

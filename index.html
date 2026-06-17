@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React Labs - IT3K6 Sun Kepeng</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+        .main-container { max-width: 800px; margin: 0 auto; padding: 40px 20px; }
+        .header { text-align: center; color: white; margin-bottom: 40px; }
+        .header h1 { font-size: 36px; margin-bottom: 10px; }
+        .header p { font-size: 16px; opacity: 0.9; }
+        .lab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .lab-card { background: white; border-radius: 15px; padding: 30px; text-decoration: none; color: #333; transition: all 0.3s; box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
+        .lab-card:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0,0,0,0.2); }
+        .lab-card .emoji { font-size: 40px; margin-bottom: 15px; display: block; }
+        .lab-card h3 { color: #667eea; margin-bottom: 10px; font-size: 20px; }
+        .lab-card p { color: #888; font-size: 14px; line-height: 1.6; }
+        .github-banner { background: white; border-radius: 15px; padding: 20px; margin-top: 30px; text-align: center; box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
+        .github-banner a { color: #667eea; font-weight: bold; font-size: 16px; text-decoration: none; }
+        .github-banner a:hover { text-decoration: underline; }
+        .student-info { text-align: center; color: white; margin-top: 30px; font-size: 14px; opacity: 0.8; }
+        @media (max-width: 600px) { .lab-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="header">
+            <h1>🚀 React Labs</h1>
+            <p>Лабораторные работы по React | Группа IT3K6 | Sun Kepeng (孙可鹏)</p>
+        </div>
+
+        <div class="lab-grid">
+            <a href="lab1_git.html" class="lab-card">
+                <span class="emoji">🐙</span>
+                <h3>Lab 1: Git</h3>
+                <p>Использование системы Git, организация удалённого репозитория на GitHub</p>
+            </a>
+            <a href="lab2_cards.html" class="lab-card">
+                <span class="emoji">📋</span>
+                <h3>Lab 2: Cards</h3>
+                <p>Разработка компонентов: отображение карточек сущностей и форма добавления</p>
+            </a>
+            <a href="lab3_login.html" class="lab-card">
+                <span class="emoji">🔐</span>
+                <h3>Lab 3: Login & Router</h3>
+                <p>Страница входа, React Router, хранение данных о пользователе в state</p>
+            </a>
+            <a href="lab4_redux.html" class="lab-card">
+                <span class="emoji">🗄️</span>
+                <h3>Lab 4: Redux</h3>
+                <p>Redux Toolkit: store, reducers, actions, root reducer</p>
+            </a>
+        </div>
+
+        <div class="github-banner">
+            <p>🔗 <a href="https://github.com/skpae/skp" target="_blank">github.com/skpae/skp</a></p>
+            <p style="color: #888; font-size: 13px; margin-top: 8px;"></p>
+        </div>
+
+        <div class="student-info">
+            <p>Студент: Sun Kepeng (孙可鹏) | Группа: IT3K6 | 2024</p>
+        </div>
+    </div>
+</body>
+</html>
